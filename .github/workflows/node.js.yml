@@ -3,7 +3,7 @@ name: Commit Changes to Another Repository
 on:
   push:
     branches:
-      - source-branch  # Branch where changes are pushed
+      - main  # Branch where changes are pushed
 
 jobs:
   commit_changes:
@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: username/target-repository
-        ref: target-branch
+        ref: main
         token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
         path: ./target-repo
       
