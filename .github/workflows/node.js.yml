@@ -3,7 +3,7 @@ name: Commit Changes to Another Repository
 on:
   push:
     branches:
-      - main  # Branch where changes are pushed
+      - master  # Branch where changes are pushed
 
 jobs:
   commit_changes:
@@ -19,7 +19,7 @@ jobs:
         repository: username/target-repository
         ref: main
         token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
-        path: ./target-repo
+        path: ./master
       
     - name: Make changes
       run: |
