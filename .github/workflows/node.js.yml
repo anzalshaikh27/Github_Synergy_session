@@ -1,31 +1,36 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Commit Changes to Another Repository
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - source-branch  # Branch where changes are pushed
 
 jobs:
-  build:
-
+  commit_changes:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+    - name: Checkout source repository
+      uses: actions/checkout@v2
+      
+    - name: Clone target repository
+      uses: actions/checkout@v2
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+        repository: username/target-repository
+        ref: target-branch
+        token: ${{ secrets.TARGET_REPO_ACCESS_TOKEN }}
+        path: ./target-repo
+      
+    - name: Make changes
+      run: |
+        # Make changes here
+        echo "New changes" >> ./target-repo/file.txt
+      
+    - name: Commit and push changes
+      run: |
+        cd ./target-repo
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+        git add .
+        git commit -m "Automated changes from source repository"
+        git push origin target-branch
